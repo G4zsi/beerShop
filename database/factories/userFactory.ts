@@ -8,7 +8,7 @@ export {
 };
 
 async function createSimpleUser() {
-	const user = new User({
+	const user = await new User({
 		firstName: faker.person.firstName(),
 		lastName: faker.person.lastName(),
 		gender: faker.person.gender(),
@@ -31,7 +31,7 @@ async function createSimpleUser() {
 }
 
 async function createManagerUser() {
-	const user = new User({
+	const user = await new User({
 		firstName: faker.person.firstName(),
 		lastName: faker.person.lastName(),
 		gender: faker.person.gender(),
@@ -47,7 +47,7 @@ async function createManagerUser() {
 }
 
 async function createAdminUser() {
-	const user = new User({
+	const user = await new User({
 		firstName: 'admin',
 		lastName: 'admin',
 		gender: faker.person.gender(),

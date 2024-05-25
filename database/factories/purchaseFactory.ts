@@ -8,8 +8,8 @@ export {
 };
 
 async function createPurchase() {
-	const purchase = new Purchase({
-		products: randomQueries(Product, faker.number.int({min:1, max:30}))
+	const purchase = await new Purchase({
+		products: await randomQueries(Product, faker.number.int({min:1, max:30}))
 	});
 	await Purchase.create(purchase);
 }

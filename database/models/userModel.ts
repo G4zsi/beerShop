@@ -14,7 +14,11 @@ const userSchema = new Schema({
     
 	gender: {
 		type: String,
-		required: [true, 'Please enter your gender.']
+		required: [true, 'Please enter your gender.'],
+		enum: {
+			values: ['Male', 'Female', 'Other'],
+			message: 'User\'s gender can be: Male, Female or Other'
+		}
 	},
 
 	email: {
@@ -32,16 +36,7 @@ const userSchema = new Schema({
 			message: 'User\'s role can be: admin, manager or customer'
 		}
 	},
-
-	phoneNumber: {
-		type: String,
-		required: [true, 'Please enter your phone number.'],
-		unique: true,
-		lowercase: true,
-		minlength: [6, 'A password must contain at least 6 characters'],
-		maxlenght: [20, 'A password can contain maximum 20 characters']
-	},
-
+	
 	password: {
 		type: String,
 		required: [true, 'Please enter your password.'],
@@ -49,24 +44,25 @@ const userSchema = new Schema({
 		minlength: [6, 'A password must contain at least 6 characters'],
 		maxlenght: [20, 'A password can contain maximum 20 characters']
 	},
-
+	
 	passwordAgain: {
 		type: String,
 		required: [true, 'Please enter your password again.'],
 		select: false,
-		minlength: [8, 'A password must contain at least 8 characters'],
+		minlength: [6, 'A password must contain at least 6 characters'],
 		maxlenght: [20, 'A password can contain maximum 20 characters']
 	},
-
+	
 	birthday: {
 		type: Date,
 		required: [true, 'Please enter your birthday.']
 	},
 
 	// optional
-	newsLetter: {
-		type: Boolean,
-		default: false
+	phoneNumber: {
+		type: String,
+		unique: true,
+		lowercase: true
 	},
 
 	zipCode: {
@@ -91,6 +87,11 @@ const userSchema = new Schema({
 
 	billingAddress: {
 		type: String
+	},
+
+	newsLetter: {
+		type: Boolean,
+		default: false
 	},
 
 	favourites: {
