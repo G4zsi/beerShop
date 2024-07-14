@@ -14,4 +14,5 @@ productRouter.route('/')
 
 productRouter.route('/:id')
 	.get(productController.getProduct)
+	.patch(productController.updateProduct)
 	.delete(productController.deleteProduct);

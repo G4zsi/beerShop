@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
+    "dbTest": "ts-node ./database/seeders/seedAll.ts seedTest",
     "db1": "ts-node ./database/seeders/seedAll.ts db1",
     "db2": "ts-node ./database/seeders/seedAll.ts db2",
-    "serve": "nodemon ./src/server.ts"
+    "serve:dev": "nodemon ./src/server.ts",
+    "serve": "ts-node ./src/server.ts",
+    "setup": "npm ci && npx playwright install"
   },
   "author": "G4zsi",
   "license": "ISC",
@@ -23,10 +26,12 @@
     "nodemon": "^3.0.1"
   },
   "dependencies": {
+    "@playwright/test": "^1.44.1",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "mongoose": "^7.6.2",
     "react": "^18.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "validator": "^13.12.0",
     "vite": "^4.5.0"

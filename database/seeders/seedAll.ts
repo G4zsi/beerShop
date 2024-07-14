@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { createAdminUser, createManagerUser } from '../factories/userFactory';
-import { seedBeers, seedProducts } from './productSeeder';
+import { seedBeers, seedProducts, seedTestProducts } from './productSeeder';
 import { seedPurchase } from './purchaseSeeder';
 import { seedReviews } from './reviewSeeder';
-import { seedUsers } from './userSeeder';
+import { seedUsers, seedTestUsers } from './userSeeder';
 import { getDBConnection } from '../../utils/dbHelper';
 
 async function seedAll() {
@@ -21,6 +21,14 @@ async function seedAll() {
 	await seedReviews(5);
 	// create purchases
 	await seedPurchase(5);
+
+	console.log('DB seed done');
+}
+
+async function seedTest() {
+	await seedTestUsers();
+	await seedTestProducts();
+	console.log('Test DB seed done');
 }
 
 async function dropAllModels() {
@@ -42,6 +50,10 @@ async function dropAllModels() {
 			dbName = 'db1';
 		}
 
+		if(process.argv[2] === 'seedTest') {
+			dbName = 'test';
+		}
+
 		console.log('Connecting to DB...');
 		const DB: string = await getDBConnection(dbName);
 		await mongoose.connect(DB);
@@ -55,6 +67,10 @@ async function dropAllModels() {
 				break;
 			case 'destroy':
 				await dropAllModels();
+				break;
+			case 'seedTest':
+				await dropAllModels();
+				await seedTest();
 				break;
 			default:
 				await dropAllModels();

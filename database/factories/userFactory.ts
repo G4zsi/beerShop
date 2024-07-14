@@ -4,7 +4,8 @@ import { User } from '../models/userModel';
 export {
 	createSimpleUser,
 	createManagerUser,
-	createAdminUser
+	createAdminUser,
+	createTestUsers
 };
 
 async function createSimpleUser() {
@@ -46,18 +47,38 @@ async function createManagerUser() {
 	await User.create(user);
 }
 
-async function createAdminUser() {
+async function createAdminUser(gender?: string, phoneNumber?: string, birthday?: Date) {
 	const user = await new User({
 		firstName: 'admin',
 		lastName: 'admin',
-		gender: faker.person.gender(),
+		gender: !gender ? faker.person.gender() : gender,
 		email: 'admin@admin.hu',
 		role: 'admin',
-		phoneNumber: faker.phone.number(),
+		phoneNumber: !phoneNumber ? faker.phone.number() : phoneNumber,
 		password: '123456',
 		passwordAgain: '123456',
-		birthday: faker.date.birthdate(),
+		birthday: !birthday ? faker.date.birthdate() : birthday
 	});
 
 	await User.create(user);
+}
+
+async function createTestUsers() {
+	await createAdminUser('Male', '+3620121212', new Date(1980, 3, 3));
+
+	for(let i = 0; i < 20; i++) {
+		const user = await new User({
+			firstName: 'User',
+			lastName: `User${i}`,
+			gender: i % 2 === 0 ? 'Male' : 'Female',
+			email: `user${i}@admin.hu`,
+			role: i === 0 ? 'manager' : 'customer',
+			phoneNumber: `+362011111${i}`,
+			password: '123456',
+			passwordAgain: '123456',
+			birthday: new Date(`1999, 1, ${i+1}`)
+		});
+
+		await User.create(user);
+	}
 }
