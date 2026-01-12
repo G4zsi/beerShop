@@ -42,7 +42,7 @@ const userSchema = new Schema({
 		required: [true, 'Please enter your password.'],
 		select: false,
 		minlength: [6, 'A password must contain at least 6 characters'],
-		maxlenght: [20, 'A password can contain maximum 20 characters']
+		maxlength: [20, 'A password can contain maximum 20 characters']
 	},
 	
 	passwordAgain: {
@@ -50,7 +50,7 @@ const userSchema = new Schema({
 		required: [true, 'Please enter your password again.'],
 		select: false,
 		minlength: [6, 'A password must contain at least 6 characters'],
-		maxlenght: [20, 'A password can contain maximum 20 characters']
+		maxlength: [20, 'A password can contain maximum 20 characters']
 	},
 	
 	birthday: {
@@ -93,7 +93,7 @@ const userSchema = new Schema({
 		default: false
 	},
 
-	favourites: {
+	favorites: {
 		type: [Schema.Types.ObjectId],
 		ref: 'Product'
 	},

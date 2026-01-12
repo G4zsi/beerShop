@@ -12,7 +12,7 @@ const reviewSchema = new Schema({
 	product: {
 		type: Schema.Types.ObjectId,
 		ref: 'Product',
-		required: [true, 'Please seelct a product for the review.']
+		required: [true, 'Please select a product for the review.']
 	},
 
 	// optional

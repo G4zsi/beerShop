@@ -23,7 +23,7 @@ const productSchema = new Schema({
 
 	description: {
 		type: String,
-		required: [true, 'Pelase enter a description.']
+		required: [true, 'Please enter a description.']
 	},
 
 	price: {
@@ -53,8 +53,8 @@ const productSchema = new Schema({
 	fermentation: {
 		type: String,
 		enum: {
-			values: ['ale', 'lager', 'hibrid'],
-			message: 'Beer fermantation can be: ale, lager or hibrid'
+			values: ['ale', 'lager', 'hybrid'],
+			message: 'Beer fermentation can be: ale, lager or hybrid'
 		}
 	},
 

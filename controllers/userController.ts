@@ -181,12 +181,12 @@ async function updateUser(req: Request, res: Response) {
 
 	//TODO: reviews, favs, purchase history, cart
 	
-	const validetadUser = await validators.validateUser(req.body);
+	const validatedUser = await validators.validateUser(req.body);
 
-	if(validetadUser != 'validated') {
+	if(validatedUser != 'validated') {
 		res.status(406).json({
 			status: 'failed',
-			message: validetadUser
+			message: validatedUser
 		});
 		return;
 	}

@@ -2,11 +2,13 @@ import mongoose from 'mongoose';
 import { Request } from 'express';
 import * as validator from 'validator';
 import { User } from '../database/models/userModel';
+import { Product } from '../database/models/productModel';
 
 export {
 	validateId,
 	validateUser,
-	validateProduct
+	validateProduct,
+	validateReview
 };
 
 async function validateId(id: string) {
@@ -92,7 +94,7 @@ async function validateProduct(product: Request['body']) {
 	}
 
 	if(!product.price || product.price.toString().length === 0) {
-		return 'Please enter the correnct price for the product';
+		return 'Please enter the correct price for the product';
 	} else if (typeof product.price != 'number') {
 		return 'Please enter a valid number.';
 	}
@@ -104,13 +106,38 @@ async function validateProduct(product: Request['body']) {
 	}
 
 	if(product.fermentation) {
-		if(product.fermentation != 'ale' && product.fermentation != 'lager' && product.fermentation != 'hibrid') {
-			return 'The fermentation type can be only ale, lager or hibrid';
+		if(product.fermentation != 'ale' && product.fermentation != 'lager' && product.fermentation != 'hybrid') {
+			return 'The fermentation type can be only ale, lager or hybrid';
 		}
 	}
 
 	if(!product.manufacturer || product.manufacturer.length === 0) {
 		return 'Please enter the manufacturer of the product';
+	}
+
+	return 'validated';
+}
+
+// review
+async function validateReview(review: Request['body']) {
+	if(!review.owner || review.owner.length === 0) {
+		return 'Please log in to write a review.';
+	} else if (await User.findById(review.owner) == undefined) {
+		return 'Please log in with a valid user to write a review.';
+	}
+
+	if(!review.product || review.product.length === 0) {
+		return 'Please select a product for the review.';
+	} else if (await Product.findById(review.product) == undefined) {
+		return 'Please select a valid product for the review.';
+	}
+
+	if (review.stars) {
+		if (review.stars != 0 && review.stars != 0.5 && review.stars != 1 && review.stars != 1.5 && review.stars != 2 &&
+			review.stars != 2.5 && review.stars != 3 && review.stars != 3.5 && review.stars != 4 &&
+			review.stars != 4.5 && review.stars != 5) {
+			return 'Please write a valid rating.';
+		}
 	}
 
 	return 'validated';
