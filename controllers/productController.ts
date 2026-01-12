@@ -10,7 +10,7 @@ export {
 	updateProduct
 };
 
-async function getAllProducts(req: Request, res: Response) {
+async function getAllProducts(res: Response) {
 	const queries = await Product.find();
 
 	res.status(200).json({
@@ -25,7 +25,7 @@ async function getAllProducts(req: Request, res: Response) {
 }
 
 async function getProduct(req: Request, res: Response) {
-	if(!await validators.validateId(req.params.id)) {
+	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Product not found, invalid ID.'
@@ -52,7 +52,7 @@ async function getProduct(req: Request, res: Response) {
 }
 
 async function deleteProduct(req: Request, res: Response) {
-	if(!await validators.validateId(req.params.id)) {
+	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Product not found, invalid ID.'
@@ -98,7 +98,7 @@ async function updateProduct(req: Request, res: Response) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedProduct: any;
 
-	if(!await validators.validateId(req.params.id)) {
+	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Document not found, invalid ID.'
@@ -108,7 +108,7 @@ async function updateProduct(req: Request, res: Response) {
 
 	try{
 		editedProduct = await Product.findById(req.params.id);
-	} catch (err) {
+	} catch {
 		res.status(400).json({
 			status: 'error',
 			message: 'Unknown error. Please try again later.'

@@ -25,7 +25,7 @@ async function getAllUsers(req: Request, res: Response) {
 }
 
 async function getUser(req: Request, res: Response) {
-	if(!await validators.validateId(req.params.id)) {
+	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'User not found, invalid ID.'
@@ -52,7 +52,7 @@ async function getUser(req: Request, res: Response) {
 }
 
 async function deleteUser(req: Request, res: Response) {
-	if(!await validators.validateId(req.params.id)) {
+	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Document not found, invalid ID.'
@@ -97,7 +97,7 @@ async function createUser(req: Request, res: Response) {
 async function updateUser(req: Request, res: Response) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedUser: any;
-	if(!await validators.validateId(req.params.id)) {
+	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Document not found, invalid ID.'
@@ -107,7 +107,7 @@ async function updateUser(req: Request, res: Response) {
 
 	try{
 		editedUser = await User.findById(req.params.id);
-	} catch (err) {
+	} catch {
 		res.status(400).json({
 			status: 'error',
 			message: 'Unknown error. Please try again later.'

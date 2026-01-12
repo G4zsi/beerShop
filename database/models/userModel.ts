@@ -61,7 +61,6 @@ const userSchema = new Schema({
 	// optional
 	phoneNumber: {
 		type: String,
-		unique: true,
 		lowercase: true
 	},
 
