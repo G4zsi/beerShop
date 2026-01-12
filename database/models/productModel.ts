@@ -31,6 +31,16 @@ const productSchema = new Schema({
 		required: [true, 'Please enter the product\'s price']
 	},
 
+	manufacturer: {
+		type: String,
+		required: [true, 'Please enter the product\'s manufacturer']
+	},
+
+	discount: {
+		type: Number,
+		required: [true, 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.']
+	},
+
 	// optional
 	type: {
 		type: String
@@ -49,10 +59,6 @@ const productSchema = new Schema({
 	},
 
 	color: {
-		type: String
-	},
-
-	brewery: {
 		type: String
 	},
 

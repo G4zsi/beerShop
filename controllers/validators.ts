@@ -15,52 +15,52 @@ async function validateId(id: string) {
 }
 
 // user
-async function validateUser (req: Request) {
-	if(!req.body.firstName || req.body.firstName.length === 0) {
+async function validateUser (user: Request['body']) {
+	if(!user.firstName || user.firstName.length === 0) {
 		return 'This field is required. Please enter your First name.';
 	}
 
-	if(!req.body.lastName || req.body.lastName.length === 0) {
+	if(!user.lastName || user.lastName.length === 0) {
 		return 'This field is required. Please enter your Last name.';
 	}
 
-	if(!req.body.gender || req.body.gender.length === 0) {
+	if(!user.gender || user.gender.length === 0) {
 		return 'This field is required. Please choose your gender';
-	} else if(req.body.gender != 'Male' && req.body.gender != 'Female' && req.body.gender != 'Other') {
+	} else if(user.gender != 'Male' && user.gender != 'Female' && user.gender != 'Other') {
 		return 'The gender must be Male, Female or other.';
 	}
 	
-	if(!req.body.email || req.body.email.length === 0) {
+	if(!user.email || user.email.length === 0) {
 		return 'This field is required. Please enter your e-mail address.';
-	} else if(!validator.isEmail(req.body.email)) {
+	} else if(!validator.isEmail(user.email)) {
 		return 'Wrong e-mail format. Please try again.';
-	} else if(await User.findOne({email: req.body.email}) != undefined) {
+	} else if(await User.findOne({email: user.email}) != undefined) {
 		return 'A profile is already uses this e-mail address. Try to login.';
 	}
 
-	if(!req.body.role || req.body.role.length === 0) {
+	if(!user.role || user.role.length === 0) {
 		return 'A user must have a role!';
-	} else if(req.body.role != 'admin' && req.body.role != 'manager' && req.body.role != 'customer') {
+	} else if(user.role != 'admin' && user.role != 'manager' && user.role != 'customer') {
 		return 'The role must be admin, manager or customer.';
 	}
 
-	if(!req.body.password || req.body.email.password === 0) {
+	if(!user.password || user.email.password === 0) {
 		return 'This field is required. Please enter your password.';
-	} else if(req.body.password.length < 6) {
+	} else if(user.password.length < 6) {
 		return 'Your password must contain at least 6 characters.';
-	} else if(req.body.password.length > 20) {
+	} else if(user.password.length > 20) {
 		return 'Your password can contain maximum of 20 characters.';
 	}
 
-	if(!req.body.passwordAgain || req.body.email.passwordAgain === 0) {
+	if(!user.passwordAgain || user.email.passwordAgain === 0) {
 		return 'This field is required. Please enter your password again.';
-	} else if(req.body.passwordAgain != req.body.passwordAgain) {
+	} else if(user.passwordAgain != user.passwordAgain) {
 		return 'The two passwords must be equal.';
 	}
 
-	if(!req.body.birthday || req.body.email.birthday === 0) {
+	if(!user.birthday || user.email.birthday === 0) {
 		return 'This field is required. Please enter your birthday.';
-	} else if(validator.isDate(req.body.birthday)) {
+	} else if(validator.isDate(user.birthday)) {
 		return 'The birthday must be a valid date.';
 	}
 
@@ -68,37 +68,49 @@ async function validateUser (req: Request) {
 }
 
 // product
-async function validateProduct(req: Request) {
-	if(!req.body.name || req.body.name.length === 0) {
+async function validateProduct(product: Request['body']) {
+	if(!product.name || product.name.length === 0) {
 		return 'This field is required. Please enter the product\'s name.';
 	}
 
-	if(!req.body.onStock || req.body.onStock.length === 0) {
+	if(!product.onStock || product.onStock.toString().length === 0) {
 		return 'This field is required. Please enter how many of this product is on stock.';
-	} else if (typeof req.body.onStock != 'number') {
+	} else if (typeof product.onStock != 'number') {
 		return 'Please enter a valid number.';
 	}
 
-	if(!req.body.category || req.body.category.length === 0) {
+	if(!product.category || product.category.length === 0) {
 		return 'Please choose a category for the product.';
-	} else if(req.body.category != 'beer' && req.body.category != 'snack' && req.body.category != 'glass'
-	&& req.body.category != 'clothing' && req.body.category != 'non-alcoholic' && req.body.category != 'gift card' && req.body.category != 'other'
+	} else if(product.category != 'beer' && product.category != 'snack' && product.category != 'glass'
+	&& product.category != 'clothing' && product.category != 'non-alcoholic' && product.category != 'gift card' && product.category != 'other'
 	) {
 		return 'The category must be beer, snack, glass, clothing, non-alcoholic, gift card or other.';
 	}
 
-	if(!req.body.description || req.body.description.length === 0) {
+	if(!product.description || product.description.length === 0) {
 		return 'Please enter description for the product.';
 	}
 
-	if(!req.body.price || req.body.price.length === 0) {
+	if(!product.price || product.price.toString().length === 0) {
 		return 'Please enter the correnct price for the product';
+	} else if (typeof product.price != 'number') {
+		return 'Please enter a valid number.';
 	}
 
-	if(req.body.fermentation) {
-		if(req.body.fermentation != 'ale' && req.body.fermentation != 'lager' && req.body.fermentation != 'hibrid') {
+	if(!product.discount || product.discount.toString().length === 0) {
+		return 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.';
+	} else if (typeof product.discount != 'number') {
+		return 'Please enter a valid number.';
+	}
+
+	if(product.fermentation) {
+		if(product.fermentation != 'ale' && product.fermentation != 'lager' && product.fermentation != 'hibrid') {
 			return 'The fermentation type can be only ale, lager or hibrid';
 		}
+	}
+
+	if(!product.manufacturer || product.manufacturer.length === 0) {
+		return 'Please enter the manufacturer of the product';
 	}
 
 	return 'validated';

@@ -1,8 +1,9 @@
-import { createBeer, createProduct } from '../factories/productFactory';
+import { createBeer, createProduct, createTestProducts } from '../factories/productFactory';
 
 export {
 	seedProducts,
-	seedBeers
+	seedBeers,
+	seedTestProducts
 };
 
 async function seedProducts(quantity: number) {
@@ -15,4 +16,8 @@ async function seedBeers(quantity: number) {
 	for(let i = 0; i < quantity; i++) {
 		await createBeer();
 	}
+}
+
+async function seedTestProducts() {
+	await createTestProducts(20, 12, 5);
 }

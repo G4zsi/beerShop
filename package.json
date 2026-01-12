@@ -5,30 +5,38 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
+    "dbTest": "ts-node ./database/seeders/seedAll.ts seedTest",
     "db1": "ts-node ./database/seeders/seedAll.ts db1",
     "db2": "ts-node ./database/seeders/seedAll.ts db2",
-    "serve": "nodemon ./src/server.ts"
+    "serve:dev": "nodemon ./src/server.ts",
+    "serve": "ts-node ./src/server.ts",
+    "setup": "npm ci && npx playwright install"
   },
   "author": "G4zsi",
   "license": "ISC",
   "devDependencies": {
-    "@faker-js/faker": "^8.2.0",
-    "@types/express": "^4.17.20",
-    "@types/validator": "^13.11.10",
-    "@typescript-eslint/eslint-plugin": "^6.8.0",
-    "@typescript-eslint/parser": "^6.8.0",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.51.0",
-    "eslint-plugin-react": "^7.33.2",
-    "nodemon": "^3.0.1"
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.2",
+    "@faker-js/faker": "^10.2.0",
+    "@types/express": "^5.0.6",
+    "@types/validator": "^13.15.10",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^17.0.0",
+    "nodemon": "^3.1.11"
   },
   "dependencies": {
-    "body-parser": "^1.20.2",
-    "express": "^4.18.2",
-    "mongoose": "^7.6.2",
-    "react": "^18.2.0",
-    "typescript": "^5.2.2",
-    "validator": "^13.12.0",
-    "vite": "^4.5.0"
+    "@playwright/test": "^1.57.0",
+    "body-parser": "^2.2.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.3",
+    "react": "^19.2.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "validator": "^13.15.26",
+    "vite": "^7.3.1"
   }
 }
