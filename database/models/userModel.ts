@@ -1,4 +1,6 @@
 import { Schema,model, models } from 'mongoose';
+import { genderTypes } from '../../utils/genderTypes';
+import { roleTypes } from '../../utils/roleTypes';
 
 const userSchema = new Schema({
 	// required
@@ -16,7 +18,7 @@ const userSchema = new Schema({
 		type: String,
 		required: [true, 'Please enter your gender.'],
 		enum: {
-			values: ['Male', 'Female', 'Other'],
+			values: genderTypes,
 			message: 'User\'s gender can be: Male, Female or Other'
 		}
 	},
@@ -32,7 +34,7 @@ const userSchema = new Schema({
 		type: String,
 		required: [true, 'Please choose from the role categories.'],
 		enum: {
-			values: ['admin', 'manager', 'customer'],
+			values: roleTypes,
 			message: 'User\'s role can be: admin, manager or customer'
 		}
 	},
@@ -41,7 +43,7 @@ const userSchema = new Schema({
 		type: String,
 		required: [true, 'Please enter your password.'],
 		select: false,
-		minlength: [6, 'A password must contain at least 6 characters'],
+		minlength: [8, 'A password must contain at least 8 characters'],
 		maxlength: [20, 'A password can contain maximum 20 characters']
 	},
 	
@@ -49,7 +51,7 @@ const userSchema = new Schema({
 		type: String,
 		required: [true, 'Please enter your password again.'],
 		select: false,
-		minlength: [6, 'A password must contain at least 6 characters'],
+		minlength: [8, 'A password must contain at least 8 characters'],
 		maxlength: [20, 'A password can contain maximum 20 characters']
 	},
 	

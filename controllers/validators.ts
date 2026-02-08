@@ -3,6 +3,7 @@ import { Request } from 'express';
 import * as validator from 'validator';
 import { User } from '../database/models/userModel';
 import { Product } from '../database/models/productModel';
+import { passwordRegex } from '../utils/passwordRegex';
 
 export {
 	validateId,
@@ -17,53 +18,93 @@ async function validateId(id: string) {
 }
 
 // user
-async function validateUser (user: Request['body']) {
-	if(!user.firstName || user.firstName.length === 0) {
-		return 'This field is required. Please enter your First name.';
+async function validateUser (user: Request['body'], options: {update: boolean}) {
+	if(!options.update) {
+		if(!user.firstName) {
+			return 'This field is required. Please enter your First name.';
+		}
+
+		if(!user.lastName) {
+			return 'This field is required. Please enter your Last name.';
+		}
+
+		if(!user.gender) {
+			return 'This field is required. Please choose your gender';
+		}	
+		
+		if(!user.email) {
+			return 'This field is required. Please enter your e-mail address.';
+		}
+
+		if(!user.role) {
+			return 'A user must have a role!';
+		}
+
+		if(!user.password) {
+			return 'This field is required. Please enter your password.';
+		}
+
+		if(!user.passwordAgain) {
+			return 'This field is required. Please enter your password again.';
+		}
+
+		if(!user.birthday) {
+			return 'This field is required. Please enter your birth date.';
+		}
 	}
 
-	if(!user.lastName || user.lastName.length === 0) {
+	if(user.firstName && user.firstName.length === 0) {
+		return 'This field is required. Please enter your First name.';
+	} 
+
+	if(user.lastName && user.lastName.length === 0) {
 		return 'This field is required. Please enter your Last name.';
 	}
 
-	if(!user.gender || user.gender.length === 0) {
-		return 'This field is required. Please choose your gender';
-	} else if(user.gender != 'Male' && user.gender != 'Female' && user.gender != 'Other') {
-		return 'The gender must be Male, Female or other.';
+	if (user.gender) {
+		if(user.gender.length === 0) {
+			return 'This field is required. Please choose your gender';
+		} else if(user.gender != 'Male' && user.gender != 'Female' && user.gender != 'Other') {
+			return 'The gender must be Male, Female or other.';
+		}
 	}
 	
-	if(!user.email || user.email.length === 0) {
-		return 'This field is required. Please enter your e-mail address.';
-	} else if(!validator.isEmail(user.email)) {
-		return 'Wrong e-mail format. Please try again.';
-	} else if(await User.findOne({email: user.email}) != undefined) {
-		return 'A profile is already uses this e-mail address. Try to login.';
+	if(user.email) {
+		if(user.email.length === 0) {
+			return 'This field is required. Please enter your e-mail address.';
+		} else if(!validator.isEmail(user.email)) {
+			return 'Wrong e-mail format. Please try again.';
+		} else if(await User.findOne({email: user.email}) != undefined) {
+			return 'A profile is already uses this e-mail address. Try to login.';
+		}
 	}
 
-	if(!user.role || user.role.length === 0) {
-		return 'A user must have a role!';
-	} else if(user.role != 'admin' && user.role != 'manager' && user.role != 'customer') {
-		return 'The role must be admin, manager or customer.';
+	if(user.role) {
+		if(user.role.length === 0) {
+			return 'A user must have a role!';
+		} else if(user.role != 'admin' && user.role != 'manager' && user.role != 'customer') {
+			return 'The role must be admin, manager or customer.';
+		}
 	}
 
-	if(!user.password || user.email.password === 0) {
-		return 'This field is required. Please enter your password.';
-	} else if(user.password.length < 6) {
-		return 'Your password must contain at least 6 characters.';
-	} else if(user.password.length > 20) {
-		return 'Your password can contain maximum of 20 characters.';
+	if(user.password && !user.password.match(passwordRegex)) {
+		return 'Your password must contain at least one letter, one number and one special character.';
 	}
 
-	if(!user.passwordAgain || user.email.passwordAgain === 0) {
-		return 'This field is required. Please enter your password again.';
-	} else if(user.passwordAgain != user.passwordAgain) {
-		return 'The two passwords must be equal.';
+	if( user.passwordAgain) {
+		if(!user.passwordAgain.match(passwordRegex)) {
+			return 'The two passwords must be equal';
+		} else if(user.passwordAgain != user.password) {
+			return 'The two passwords must be equal.';
+		}
 	}
 
-	if(!user.birthday || user.email.birthday === 0) {
-		return 'This field is required. Please enter your birthday.';
-	} else if(validator.isDate(user.birthday)) {
-		return 'The birthday must be a valid date.';
+	if (user.birthday) {
+		if(user.birthday.length === 0) {
+			return 'This field is required. Please enter your birth date.';
+		} else if(!validator.isDate(user.birthday, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
+			return 'The birthday must be a valid date.';
+		}
 	}
 
 	return 'validated';

@@ -1,0 +1,1 @@
+export const roleTypes = ['customer', 'admin', 'manager'];

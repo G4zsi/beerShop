@@ -32,7 +32,12 @@ async function seedTest() {
 }
 
 async function dropAllModels() {
-	const collections = await mongoose.connection.db.collections();
+	const db = mongoose.connection.db;
+	if (!db) {
+		console.log('Database connection is not available');
+		return;
+	}
+	const collections = await db.collections();
 
 	for (const collection of collections) {
 		await collection.drop();

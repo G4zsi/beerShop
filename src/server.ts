@@ -8,7 +8,7 @@ export {
 
 async function server() {
 	try {
-		const DB = await getDBConnection('db1');
+		const DB = await getDBConnection('test');
 		await mongoose.connect(DB);
 		console.log('DB connection was successful.');
 		const port = process.env.PORT || 3000;

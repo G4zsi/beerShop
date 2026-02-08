@@ -6,11 +6,12 @@ export {
 	getAllReviews,
 	getReview,
 	deleteReview,
-	createReview
+	createReview,
+	updateReview
 };
 
 
-async function getAllReviews(res: Response) {
+async function getAllReviews(_req: Request, res: Response) {
 	const queries = await Review.find();
 
 	res.status(200).json({
@@ -55,7 +56,7 @@ async function deleteReview(req: Request, res: Response) {
 	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
-			message: 'Product not found, invalid ID.'
+			message: 'Review not found, invalid ID.'
 		});
 		return;
 	}
@@ -94,4 +95,34 @@ async function createReview(req: Request, res: Response) {
 			newReview
 		}
 	});
+}
+
+async function updateReview(req: Request, res: Response) {
+	let editedReview: any;
+	if(!await validators.validateId(String(req.params.id))) {
+		res.status(404).json({
+			status: 'failed',
+			message: 'Review not found, invalid ID.'
+		});
+		return;
+	}
+
+	try {
+		editedReview = await Review.findById(req.params.id);
+	} catch {
+		res.status(400).json({
+			status: 'error',
+			message: 'Unknown error. Please try again later.'
+		});
+		return;
+	}
+
+	if (!editedReview) {
+		res.status(404).json({
+			status: 'failed',
+			message: 'Review not found.'
+		});
+		return;
+	}	
+
 }

@@ -1,4 +1,5 @@
 import { Schema, model, models } from 'mongoose';
+import { fermentationTypes } from '../../utils/fermentationTypes';
 
 const productSchema = new Schema({
 	//required
@@ -53,7 +54,7 @@ const productSchema = new Schema({
 	fermentation: {
 		type: String,
 		enum: {
-			values: ['ale', 'lager', 'hybrid'],
+			values: fermentationTypes,
 			message: 'Beer fermentation can be: ale, lager or hybrid'
 		}
 	},

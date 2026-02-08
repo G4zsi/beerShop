@@ -10,7 +10,7 @@ export {
 	updateProduct
 };
 
-async function getAllProducts(res: Response) {
+async function getAllProducts(_req: Request, res: Response) {
 	const queries = await Product.find();
 
 	res.status(200).json({

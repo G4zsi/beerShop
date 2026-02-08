@@ -1,5 +1,6 @@
 import {faker} from '@faker-js/faker';
 import { User } from '../models/userModel';
+import { genderTypes } from '../../utils/genderTypes';
 
 export {
 	createSimpleUser,
@@ -12,12 +13,12 @@ async function createSimpleUser() {
 	const user = await new User({
 		firstName: faker.person.firstName(),
 		lastName: faker.person.lastName(),
-		gender: faker.person.gender(),
+		gender: faker.helpers.arrayElement(genderTypes),
 		email: faker.internet.email(),
 		role: 'customer',
 		phoneNumber: faker.phone.number(),
-		password: '123456',
-		passwordAgain: '123456',
+		password: 'Pwd-123456',
+		passwordAgain: 'Pwd-123456',
 		birthday: faker.date.birthdate(),
 		newsLetter: faker.datatype.boolean(),
 		zipCode: faker.number.int({min: 1000, max: 9999}),
@@ -35,12 +36,12 @@ async function createManagerUser() {
 	const user = await new User({
 		firstName: faker.person.firstName(),
 		lastName: faker.person.lastName(),
-		gender: faker.person.gender(),
+		gender: faker.helpers.arrayElement(genderTypes),
 		email: faker.internet.email(),
 		role: 'manager',
 		phoneNumber: faker.phone.number(),
-		password: '123456',
-		passwordAgain: '123456',
+		password: 'Pwd-123456',
+		passwordAgain: 'Pwd-123456',
 		birthday: faker.date.birthdate(),
 	});
 
@@ -51,12 +52,12 @@ async function createAdminUser(gender?: string, phoneNumber?: string, birthday?:
 	const user = await new User({
 		firstName: 'admin',
 		lastName: 'admin',
-		gender: !gender ? faker.person.gender() : gender,
+		gender: faker.helpers.arrayElement(genderTypes),
 		email: 'admin@admin.hu',
 		role: 'admin',
 		phoneNumber: !phoneNumber ? faker.phone.number() : phoneNumber,
-		password: '123456',
-		passwordAgain: '123456',
+		password: 'Pwd-123456',
+		passwordAgain: 'Pwd-123456',
 		birthday: !birthday ? faker.date.birthdate() : birthday
 	});
 
@@ -70,12 +71,12 @@ async function createTestUsers() {
 		const user = await new User({
 			firstName: 'User',
 			lastName: `User${i}`,
-			gender: i % 2 === 0 ? 'Male' : 'Female',
+			gender: faker.helpers.arrayElement(genderTypes),
 			email: `user${i}@admin.hu`,
 			role: i === 0 ? 'manager' : 'customer',
 			phoneNumber: `+362011111${i}`,
-			password: '123456',
-			passwordAgain: '123456',
+			password: 'Pwd-123456',
+			passwordAgain: 'Pwd-123456',
 			birthday: new Date(`1999, 1, ${i+1}`)
 		});
 
