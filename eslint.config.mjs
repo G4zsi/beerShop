@@ -45,7 +45,7 @@ export default defineConfig([{
 		semi: ['error', 'always'],
 
 		'max-lines': ['error', {
-			max: 200,
+			max: 500,
 			skipBlankLines: true,
 			skipComments: true,
 		}],

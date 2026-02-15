@@ -75,7 +75,7 @@ async function deleteProduct(req: Request, res: Response) {
 }
 
 async function createProduct(req: Request, res: Response) {
-	const validatedProduct = await validators.validateProduct(req.body);
+	const validatedProduct = await validators.validateProduct(req.body, {update: false});
 	if(validatedProduct != 'validated') {
 		res.status(406).json({
 			status: 'failed',
@@ -124,51 +124,7 @@ async function updateProduct(req: Request, res: Response) {
 		return;
 	}
 
-	if(!req.body.name) {
-		req.body.name = editedProduct['name'];
-	}
-
-	if(!req.body.onStock) {
-		req.body.onStock = editedProduct['onStock'];
-	}
-
-	if(!req.body.category) {
-		req.body.category = editedProduct['category'];
-	}
-
-	if(!req.body.description) {
-		req.body.description = editedProduct['description'];
-	}
-
-	if(!req.body.price) {
-		req.body.price = editedProduct['price'];
-	}
-
-	if(!req.body.manufacturer) {
-		req.body.manufacturer = editedProduct['manufacturer'];
-	}
-
-	if(!req.body.discount) {
-		req.body.discount = editedProduct['discount'];
-	}
-
-	if(!req.body.type) {
-		req.body.type = editedProduct['type'];
-	}
-
-	if(!req.body.country) {
-		req.body.country = editedProduct['country'];
-	}
-
-	if(!req.body.fermentation) {
-		req.body.fermentation = editedProduct['fermentation'];
-	}
-
-	if(!req.body.color) {
-		req.body.color = editedProduct['color'];
-	}
-
-	const validatedProduct = await validators.validateProduct(req.body);
+	const validatedProduct = await validators.validateProduct(req.body, {update: true});
 
 	if(validatedProduct != 'validated') {
 		res.status(406).json({

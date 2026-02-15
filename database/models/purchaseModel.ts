@@ -10,6 +10,6 @@ const purchaseSchema = new Schema({
 	usedCoupons: {
 		type: [String]
 	}
-}, { timestamps: true });
+}, { timestamps: true, strict: true });
 
 export const Purchase = models.Purchase || model('Purchase', purchaseSchema);

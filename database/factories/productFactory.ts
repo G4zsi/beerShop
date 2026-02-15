@@ -1,5 +1,6 @@
 import {faker} from '@faker-js/faker';
 import { Product } from '../models/productModel';
+import { fermentationTypes, productCategories } from '../../utils/dbValues/productValues';
 
 export {
 	createProduct,
@@ -11,7 +12,7 @@ async function createProduct() {
 	const product = await new Product({
 		name: faker.commerce.productName(),
 		onStock: faker.number.int({min: 0}),
-		category: faker.helpers.arrayElement(['snack', 'glass', 'clothing', 'non-alcoholic', 'book', 'gift card', 'other']),
+		category: faker.helpers.arrayElement(productCategories),
 		description: faker.commerce.productDescription(),
 		price: faker.commerce.price(),
 		country: faker.location.country(),
@@ -31,7 +32,7 @@ async function createBeer() {
 		price: faker.commerce.price(),
 		country: faker.location.country(),
 		type: faker.commerce.product(),
-		fermentation: faker.helpers.arrayElement(['ale', 'lager', 'hibrid']),
+		fermentation: faker.helpers.arrayElement(fermentationTypes),
 		color: faker.color.human(),
 		manufacturer: faker.company.name(),
 		discount: faker.number.int({min: 0, max: 50})
@@ -51,7 +52,7 @@ async function createTestProducts(beerNum: number, snackNum: number, glassNum: n
 			price: calculatePrice(i),
 			type: 'beer',
 			country: 'Hungary',
-			fermentation: i % 2 ? 'lager' : 'ale',
+			fermentation: faker.helpers.arrayElement(fermentationTypes),
 			color: 'light',
 			manufacturer: 'test brewery',
 			discount: 0

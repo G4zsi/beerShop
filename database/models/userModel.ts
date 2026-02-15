@@ -1,6 +1,6 @@
 import { Schema,model, models } from 'mongoose';
-import { genderTypes } from '../../utils/genderTypes';
-import { roleTypes } from '../../utils/roleTypes';
+import { genderTypes, roleTypes } from '../../utils/dbValues/userValues';
+import { passwordRegex } from '../../utils/passwordRegex';
 
 const userSchema = new Schema({
 	// required
@@ -19,7 +19,7 @@ const userSchema = new Schema({
 		required: [true, 'Please enter your gender.'],
 		enum: {
 			values: genderTypes,
-			message: 'User\'s gender can be: Male, Female or Other'
+			message: `User's gender can be: ${genderTypes.join(', ')}`
 		}
 	},
 
@@ -35,7 +35,7 @@ const userSchema = new Schema({
 		required: [true, 'Please choose from the role categories.'],
 		enum: {
 			values: roleTypes,
-			message: 'User\'s role can be: admin, manager or customer'
+			message: `User's role can be: ${roleTypes.join(', ')}`
 		}
 	},
 	
@@ -44,7 +44,8 @@ const userSchema = new Schema({
 		required: [true, 'Please enter your password.'],
 		select: false,
 		minlength: [8, 'A password must contain at least 8 characters'],
-		maxlength: [20, 'A password can contain maximum 20 characters']
+		maxlength: [20, 'A password can contain maximum 20 characters'],
+		match: [passwordRegex, 'A password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character.']
 	},
 	
 	passwordAgain: {
@@ -52,7 +53,8 @@ const userSchema = new Schema({
 		required: [true, 'Please enter your password again.'],
 		select: false,
 		minlength: [8, 'A password must contain at least 8 characters'],
-		maxlength: [20, 'A password can contain maximum 20 characters']
+		maxlength: [20, 'A password can contain maximum 20 characters'],
+		match: [passwordRegex, 'A password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character.']
 	},
 	
 	birthday: {
@@ -119,6 +121,6 @@ const userSchema = new Schema({
 		type: [Schema.Types.ObjectId],
 		ref: 'Review'
 	}
-}, { timestamps: true });
+}, { timestamps: true, strict: true });
 
 export const User = models.User || model('User', userSchema);

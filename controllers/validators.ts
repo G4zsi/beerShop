@@ -3,7 +3,11 @@ import { Request } from 'express';
 import * as validator from 'validator';
 import { User } from '../database/models/userModel';
 import { Product } from '../database/models/productModel';
+import { Review } from '../database/models/reviewModel';
 import { passwordRegex } from '../utils/passwordRegex';
+import { genderTypes, roleTypes } from '../utils/dbValues/userValues';
+import { productCategories, fermentationTypes } from '../utils/dbValues/productValues';
+import { starValues } from '../utils/dbValues/reviewValues';
 
 export {
 	validateId,
@@ -19,6 +23,12 @@ async function validateId(id: string) {
 
 // user
 async function validateUser (user: Request['body'], options: {update: boolean}) {
+	const schemaKeys = Object.keys(User.schema.obj);
+	const keys = Object.keys(user);
+	if (keys.some(key => !schemaKeys.includes(key))) {
+		return `Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`;
+	}
+
 	if(!options.update) {
 		if(!user.firstName) {
 			return 'This field is required. Please enter your First name.';
@@ -64,8 +74,9 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 	if (user.gender) {
 		if(user.gender.length === 0) {
 			return 'This field is required. Please choose your gender';
-		} else if(user.gender != 'Male' && user.gender != 'Female' && user.gender != 'Other') {
-			return 'The gender must be Male, Female or other.';
+		} else if(!genderTypes.includes(user.gender)) {
+			const formatted = `${genderTypes.slice(0, -1).join(', ')} or ${genderTypes[genderTypes.length - 1]}`;
+			return `The gender must be ${formatted}.`;
 		}
 	}
 	
@@ -82,8 +93,9 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 	if(user.role) {
 		if(user.role.length === 0) {
 			return 'A user must have a role!';
-		} else if(user.role != 'admin' && user.role != 'manager' && user.role != 'customer') {
-			return 'The role must be admin, manager or customer.';
+		} else if(!roleTypes.includes(user.role)) {
+			const formatted = `${roleTypes.slice(0, -1).join(', ')} or ${roleTypes[roleTypes.length - 1]}`;
+			return `The role must be ${formatted}.`;
 		}
 	}
 
@@ -111,48 +123,92 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 }
 
 // product
-async function validateProduct(product: Request['body']) {
-	if(!product.name || product.name.length === 0) {
-		return 'This field is required. Please enter the product\'s name.';
+async function validateProduct(product: Request['body'], options: {update: boolean}) {
+	const schemaKeys = Object.keys(Product.schema.obj);
+	const keys = Object.keys(product);
+	if (keys.some(key => !schemaKeys.includes(key))) {
+		return `Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`;
 	}
 
-	if(!product.onStock || product.onStock.toString().length === 0) {
-		return 'This field is required. Please enter how many of this product is on stock.';
-	} else if (typeof product.onStock != 'number') {
-		return 'Please enter a valid number.';
-	}
+	if(!options.update) {
+		if(!product.name) {
+			return 'This field is required. Please enter the product\'s name.';
+		}
 
-	if(!product.category || product.category.length === 0) {
-		return 'Please choose a category for the product.';
-	} else if(product.category != 'beer' && product.category != 'snack' && product.category != 'glass'
-	&& product.category != 'clothing' && product.category != 'non-alcoholic' && product.category != 'gift card' && product.category != 'other'
-	) {
-		return 'The category must be beer, snack, glass, clothing, non-alcoholic, gift card or other.';
-	}
+		if(!product.onStock) {
+			return 'This field is required. Please enter how many of this product is on stock.';
+		}
 
-	if(!product.description || product.description.length === 0) {
-		return 'Please enter description for the product.';
-	}
+		if(!product.category) {
+			return 'Please choose a category for the product.';
+		}
 
-	if(!product.price || product.price.toString().length === 0) {
-		return 'Please enter the correct price for the product';
-	} else if (typeof product.price != 'number') {
-		return 'Please enter a valid number.';
-	}
+		if(!product.description) {
+			return 'Please enter description for the product.';
+		}
 
-	if(!product.discount || product.discount.toString().length === 0) {
-		return 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.';
-	} else if (typeof product.discount != 'number') {
-		return 'Please enter a valid number.';
-	}
+		if(!product.price) {
+			return 'Please enter the correct price for the product';
+		}
 
-	if(product.fermentation) {
-		if(product.fermentation != 'ale' && product.fermentation != 'lager' && product.fermentation != 'hybrid') {
-			return 'The fermentation type can be only ale, lager or hybrid';
+		if(!product.discount) {
+			return 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.';
+		}
+
+		if(!product.manufacturer) {
+			return 'Please enter the manufacturer of the product';
 		}
 	}
 
-	if(!product.manufacturer || product.manufacturer.length === 0) {
+	if(product.name && product.name.length === 0) {
+		return 'This field is required. Please enter the product\'s name.';
+	}
+
+	if (product.onStock) {
+		if(product.onStock.toString().length === 0) {
+			return 'This field is required. Please enter how many of this product is on stock.';
+		} else if (typeof product.onStock != 'number') {
+			return 'Please enter a valid number.';
+		}
+	}
+
+	if (product.category) {
+		if(product.category.length === 0) {
+			return 'Please choose a category for the product.';
+		} else if(!productCategories.includes(product.category)) {
+			const formatted = `${productCategories.slice(0, -1).join(', ')} or ${productCategories[productCategories.length - 1]}`;
+			return `The category must be ${formatted}.`;
+		}
+	}
+
+	if(product.description && product.description.length === 0) {
+		return 'Please enter description for the product.';
+	}
+
+	if (product.price) {
+		if(product.price.toString().length === 0) {
+			return 'Please enter the correct price for the product';
+		} else if (typeof product.price != 'number') {
+			return 'Please enter a valid number.';
+		}
+	}
+
+	if (product.discount) {
+		if(product.discount.toString().length === 0) {
+			return 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.';
+		} else if (typeof product.discount != 'number') {
+			return 'Please enter a valid number.';
+		}
+	}
+
+	if(product.fermentation) {
+		if(!fermentationTypes.includes(product.fermentation)) {
+			const formatted = `${fermentationTypes.slice(0, -1).join(', ')} or ${fermentationTypes[fermentationTypes.length - 1]}`;
+			return `The fermentation type must be ${formatted}.`;
+		}
+	}
+
+	if(product.manufacturer && product.manufacturer.length === 0) {
 		return 'Please enter the manufacturer of the product';
 	}
 
@@ -160,25 +216,47 @@ async function validateProduct(product: Request['body']) {
 }
 
 // review
-async function validateReview(review: Request['body']) {
-	if(!review.owner || review.owner.length === 0) {
-		return 'Please log in to write a review.';
-	} else if (await User.findById(review.owner) == undefined) {
-		return 'Please log in with a valid user to write a review.';
+async function validateReview(review: Request['body'], options: {update: boolean}) {
+	const schemaKeys = Object.keys(Review.schema.obj);
+	const keys = Object.keys(review);
+	if (keys.some(key => !schemaKeys.includes(key))) {
+		return `Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`;
 	}
 
-	if(!review.product || review.product.length === 0) {
-		return 'Please select a product for the review.';
-	} else if (await Product.findById(review.product) == undefined) {
-		return 'Please select a valid product for the review.';
+	if(!options.update) {
+		if(!review.owner) {
+			return 'Please log in to write a review.';
+		}
+		if(!review.product) {
+			return 'Please select a product for the review.';
+		}
 	}
 
+	if(review.owner) {
+		if(review.owner.length === 0) {
+			return 'Please log in to write a review.';
+		} else if (await User.findById(review.owner) == undefined) {
+			return 'Please log in with a valid user to write a review.';
+		}
+	}
+
+	if(review.product) {
+		if(review.product.length === 0) {
+			return 'Please select a product for the review.';
+		} else if (await Product.findById(review.product) == undefined) {
+			return 'Please select a valid product for the review.';
+		}
+	}
+
+	
 	if (review.stars) {
-		if (review.stars != 0 && review.stars != 0.5 && review.stars != 1 && review.stars != 1.5 && review.stars != 2 &&
-			review.stars != 2.5 && review.stars != 3 && review.stars != 3.5 && review.stars != 4 &&
-			review.stars != 4.5 && review.stars != 5) {
+		if (typeof review.stars != 'number' || !starValues.includes(review.stars)) {
 			return 'Please write a valid rating.';
 		}
+	}
+		
+	if(!review.comment || review.comment.length === 0 && !review.stars) {
+		return 'Please write a comment or a rating for the review.';
 	}
 
 	return 'validated';

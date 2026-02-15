@@ -1,5 +1,5 @@
 import { Schema, model, models } from 'mongoose';
-import { fermentationTypes } from '../../utils/fermentationTypes';
+import { fermentationTypes, productCategories } from '../../utils/dbValues/productValues';
 
 const productSchema = new Schema({
 	//required
@@ -17,8 +17,8 @@ const productSchema = new Schema({
 		type: String,
 		required: [true, 'Please choose from the categories'],
 		enum: {
-			values: ['beer', 'snack', 'glass', 'clothing', 'non-alcoholic', 'book', 'gift card', 'other'],
-			message: 'Product category can only be: beer, snack, glass, clothing, non-alcoholic, book, gift card or other.'
+			values: productCategories,
+			message: `Product category can only be: ${productCategories.join(', ')}`
 		}
 	},
 
@@ -55,7 +55,7 @@ const productSchema = new Schema({
 		type: String,
 		enum: {
 			values: fermentationTypes,
-			message: 'Beer fermentation can be: ale, lager or hybrid'
+			message: `Beer fermentation can be: ${fermentationTypes.join(', ')}`
 		}
 	},
 
@@ -67,6 +67,6 @@ const productSchema = new Schema({
 		type: [Schema.Types.ObjectId],
 		ref: 'Review'
 	}
-}, { timestamps: true });
+}, { timestamps: true, strict: true });
 
 export const Product = models.Product || model('Product', productSchema);

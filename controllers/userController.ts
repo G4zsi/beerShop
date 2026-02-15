@@ -123,62 +123,6 @@ async function updateUser(req: Request, res: Response) {
 		return;
 	}
 
-	// if(!req.body.firstName) {
-	// 	req.body.firstName = editedUser['firstName'];
-	// }
-
-	// if(!req.body.lastName) {
-	// 	req.body.lastName = editedUser['lastName'];
-	// }
-
-	// if(!req.body.gender) {
-	// 	req.body.gender = editedUser['gender'];
-	// }
-
-	// if(!req.body.email) {
-	// 	req.body.email = editedUser['email'];
-	// }
-
-	// if(!req.body.role) {
-	// 	req.body.role = editedUser['role'];
-	// }
-
-	// if(!req.body.password) {
-	// 	req.body.password = editedUser['password'];
-	// }
-
-	// if(!req.body.birthday) {
-	// 	req.body.birthday = editedUser['birthday'];
-	// }
-
-	// if(!req.body.phoneNumber) {
-	// 	req.body.phoneNumber = editedUser['phoneNumber'];
-	// }
-
-	// if(!req.body.zipCode) {
-	// 	req.body.zipCode = editedUser['zipCode'];
-	// }
-
-	// if(!req.body.address) {
-	// 	req.body.address = editedUser['address'];
-	// }
-
-	// if(!req.body.billingZipCode) {
-	// 	req.body.billingZipCode = editedUser['billingZipCode'];
-	// }
-
-	// if(!req.body.billingCity) {
-	// 	req.body.billingCity = editedUser['billingCity'];
-	// }
-
-	// if(!req.body.billingAddress) {
-	// 	req.body.billingAddress = editedUser['billingAddress'];
-	// }
-
-	// if(!req.body.newsLetter) {
-	// 	req.body.newsLetter = editedUser['newsLetter'];
-	// }
-
 	const validatedUser = await validators.validateUser(req.body, {update: true});
 
 	if(validatedUser != 'validated') {

@@ -1,0 +1,1 @@
+export const commentRegex = /^(?=(?:.*[A-Za-z]){2,}).{2,}$/;

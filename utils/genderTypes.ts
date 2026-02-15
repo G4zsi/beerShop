@@ -1,1 +1,0 @@
-export const genderTypes = ['Male', 'Female', 'Other'];

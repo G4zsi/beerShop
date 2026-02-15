@@ -78,7 +78,7 @@ async function deleteReview(req: Request, res: Response) {
 }
 
 async function createReview(req: Request, res: Response) {
-	const validatedReview = await validators.validateReview(req.body);
+	const validatedReview = await validators.validateReview(req.body, {update: false});
 	if (validatedReview != 'validated') {
 		res.status(400).json({
 			status: 'failed',
@@ -98,6 +98,7 @@ async function createReview(req: Request, res: Response) {
 }
 
 async function updateReview(req: Request, res: Response) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedReview: any;
 	if(!await validators.validateId(String(req.params.id))) {
 		res.status(404).json({
@@ -125,4 +126,22 @@ async function updateReview(req: Request, res: Response) {
 		return;
 	}	
 
+
+	const validatedReview = await validators.validateReview(req.body, {update: true});
+	if (validatedReview != 'validated') {
+		res.status(406).json({
+			status: 'failed',
+			message: validatedReview
+		});
+		return;
+	}
+
+	await Review.findByIdAndUpdate(req.params.id, req.body);
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			data: null
+		}
+	});
 }

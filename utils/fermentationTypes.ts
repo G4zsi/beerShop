@@ -1,1 +1,0 @@
-export const fermentationTypes = ['ale', 'lager', 'hybrid'];
