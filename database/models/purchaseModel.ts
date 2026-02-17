@@ -1,6 +1,12 @@
-import { Schema,model, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 const purchaseSchema = new Schema({
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+		required: [true, 'A purchase must be associated with a user.']
+	},
+
 	products: {
 		type: [Schema.Types.ObjectId],
 		ref: 'Product',

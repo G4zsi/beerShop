@@ -226,36 +226,34 @@ async function validateReview(review: Request['body'], options: {update: boolean
 	if(!options.update) {
 		if(!review.owner) {
 			return 'Please log in to write a review.';
+		} else if(review.owner && review.owner.length === 0) {
+			return 'Please log in to write a review.';
 		}
+		
 		if(!review.product) {
 			return 'Please select a product for the review.';
-		}
-	}
-
-	if(review.owner) {
-		if(review.owner.length === 0) {
-			return 'Please log in to write a review.';
-		} else if (await User.findById(review.owner) == undefined) {
-			return 'Please log in with a valid user to write a review.';
-		}
-	}
-
-	if(review.product) {
-		if(review.product.length === 0) {
+		} else if(review.product && review.product.length === 0) {
 			return 'Please select a product for the review.';
-		} else if (await Product.findById(review.product) == undefined) {
-			return 'Please select a valid product for the review.';
-		}
+		} 
 	}
 
-	
+	if (options.update) {
+		if(review.owner || review.owner === '') {
+			return 'The owner of the review cannot be changed.';
+		}
+
+		if(review.product || review.product === '') {
+			return 'the product of the review cannot be changed.';
+		} 
+	}
+
 	if (review.stars) {
 		if (typeof review.stars != 'number' || !starValues.includes(review.stars)) {
 			return 'Please write a valid rating.';
 		}
 	}
 		
-	if(!review.comment || review.comment.length === 0 && !review.stars) {
+	if((!review.description || review.description.length === 0) && (!review.stars || review.stars.length === 0)) {
 		return 'Please write a comment or a rating for the review.';
 	}
 
