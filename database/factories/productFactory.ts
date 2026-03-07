@@ -18,7 +18,6 @@ async function createProduct() {
 		country: faker.location.country(),
 		manufacturer: faker.company.name(),
 		discount: faker.number.int({min: 0, max: 50})
-		// reviews
 	});
 	await Product.create(product);
 }
@@ -36,7 +35,6 @@ async function createBeer() {
 		color: faker.color.human(),
 		manufacturer: faker.company.name(),
 		discount: faker.number.int({min: 0, max: 50})
-		// reviews
 	});
 	await Product.create(beer);
 }
@@ -103,7 +101,5 @@ async function createTestProducts(beerNum: number, snackNum: number, glassNum: n
 			return 2500;
 		} 
 	}
-
-	
 }
 

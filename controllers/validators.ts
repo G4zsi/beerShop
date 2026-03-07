@@ -8,12 +8,16 @@ import { passwordRegex } from '../utils/passwordRegex';
 import { genderTypes, roleTypes } from '../utils/dbValues/userValues';
 import { productCategories, fermentationTypes } from '../utils/dbValues/productValues';
 import { starValues } from '../utils/dbValues/reviewValues';
+import { Purchase } from '../database/models/purchaseModel';
+import { Coupon } from '../database/models/couponModel';
 
 export {
 	validateId,
 	validateUser,
 	validateProduct,
-	validateReview
+	validateReview,
+	validatePurchase,
+	validateCoupon
 };
 
 async function validateId(id: string) {
@@ -23,10 +27,10 @@ async function validateId(id: string) {
 
 // user
 async function validateUser (user: Request['body'], options: {update: boolean}) {
-	const schemaKeys = Object.keys(User.schema.obj);
-	const keys = Object.keys(user);
-	if (keys.some(key => !schemaKeys.includes(key))) {
-		return `Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`;
+	try {
+		await checkExtraFields(user, User);
+	} catch (err) {
+		return err;
 	}
 
 	if(!options.update) {
@@ -124,10 +128,10 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 
 // product
 async function validateProduct(product: Request['body'], options: {update: boolean}) {
-	const schemaKeys = Object.keys(Product.schema.obj);
-	const keys = Object.keys(product);
-	if (keys.some(key => !schemaKeys.includes(key))) {
-		return `Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`;
+	try {
+		await checkExtraFields(product, Product);
+	} catch (err) {
+		return err;
 	}
 
 	if(!options.update) {
@@ -217,10 +221,10 @@ async function validateProduct(product: Request['body'], options: {update: boole
 
 // review
 async function validateReview(review: Request['body'], options: {update: boolean}) {
-	const schemaKeys = Object.keys(Review.schema.obj);
-	const keys = Object.keys(review);
-	if (keys.some(key => !schemaKeys.includes(key))) {
-		return `Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`;
+	try {
+		await checkExtraFields(review, Review);
+	} catch (err) {
+		return err;
 	}
 
 	if(!options.update) {
@@ -258,4 +262,156 @@ async function validateReview(review: Request['body'], options: {update: boolean
 	}
 
 	return 'validated';
+}
+
+async function validatePurchase(purchase: Request['body'], options: {update: boolean}) {
+	try {
+		await checkExtraFields(purchase, Purchase);
+	} catch (err) {
+		return err;
+	}
+
+	if(!options.update) {
+		if(!purchase.user) {
+			return 'A purchase must be associated with a user.';
+		}
+		if(!purchase.products) {
+			return 'A purchase must contain at least one product.';
+		}
+		if(!purchase.price) {
+			return 'A purchase must have a price.';
+		}
+	}
+
+	if(purchase.user && purchase.user.length === 0) {
+		return 'The user field is required.';
+	}
+
+	if(purchase.products && purchase.products.length === 0) {
+		return 'A purchase must contain at least one product.';
+	}
+
+	if (purchase.price) {
+		if(purchase.price.toString().length === 0) {
+			return 'A purchase must have a price.';
+		} else if (typeof purchase.price != 'number') {
+			return 'Please enter a valid number.';
+		} else if (purchase.price < 0) {
+			return 'The price can\'t be negative.';
+		}
+	}
+
+	if (purchase.discount && purchase.discount.toString().length > 0) {
+		if (typeof purchase.discount != 'number') {
+			return 'Please enter a valid number.';
+		} else if (purchase.discount < 0) {
+			return 'The discount can\'t be negative.';
+		} else if (purchase.discount > 1) {
+			return 'The discount can\'t be more than 100%.';
+		}
+	}
+
+	return 'validated';
+}
+
+async function validateCoupon(coupon: Request['body'], options: {update: boolean}) {
+	try {
+		await checkExtraFields(coupon, Coupon);
+	} catch (err) {
+		return err;
+	}
+
+	if(!options.update) {
+		if(!coupon.code) {
+			return 'A coupon must have a code.';
+		}
+		if(!coupon.discount) {
+			return 'A coupon must have a discount.';
+		}
+		if(!coupon.combinable) {
+			return 'Please specify if the coupon can be combined with other coupons.';
+		}
+		if(!coupon.active) {
+			return 'Please specify if the coupon is active.';
+		}
+	}
+
+	if (coupon.code) {
+		if (coupon.code.length === 0) {
+			return 'A coupon must have a code.';
+		}
+		 else if (coupon.code.length < 3) {
+			return 'The coupon code must be at least 3 characters long.';
+		} else if (coupon.code.length > 20) {
+			return 'The coupon code can\'t be longer than 20 characters.';
+		} else if (await Coupon.findOne({code: coupon.code}) != undefined) {
+			return 'A coupon with this code already exists.';
+		}
+	}
+
+	if (coupon.discount) {
+		if (coupon.discount.toString().length === 0) {
+			return 'A coupon must have a discount.';
+		} else if (typeof coupon.discount != 'number') {
+			return 'Please enter a valid number.';
+		} else if (coupon.discount < 0) {
+			return 'The discount can\'t be negative.';
+		} else if (coupon.discount > 1) {
+			return 'The discount can\'t be more than 100%.';
+		}
+	}
+
+	if (coupon.combinable && typeof coupon.combinable != 'boolean') {
+		return 'Please specify if the coupon can be combined with other coupons.';
+	}
+
+	if (coupon.active && typeof coupon.active != 'boolean') {
+		return 'Please specify if the coupon is active.';
+	}
+	
+	if (coupon.startDate && !validator.isDate(coupon.startDate, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
+		return 'The start date must be a valid date.';
+	}
+
+	if (coupon.expirationDate) {
+		if(!validator.isDate(coupon.expirationDate, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
+			return 'The expiration date must be a valid date.';
+		} else if (coupon.startDate && new Date(coupon.expirationDate) < new Date(coupon.startDate)) {
+			return 'The expiration date can\'t be before the start date.';
+		}
+	}
+
+	if (coupon.limitedUse) {
+		if (typeof coupon.limitedUse != 'number') {
+			return 'Please enter a valid number.';
+		} else if (coupon.limitedUse < 1) {
+			return 'The coupon must be usable at least once.';
+		}
+	}
+
+	if (coupon.minValue) {
+		if (typeof coupon.minValue != 'number') {
+			return 'Please enter a valid number.';
+		} else if (coupon.minValue < 0) {
+			return 'The minimum value can\'t be negative.';
+		}
+	}
+
+	if (coupon.maxValue) {
+		if (typeof coupon.maxValue != 'number') {
+			return 'Please enter a valid number.';
+		} else if (coupon.maxValue < 0) {
+			return 'The maximum value can\'t be negative.';
+		}
+	}
+	
+	return 'validated';
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function checkExtraFields(data: Request['body'], model: mongoose.Model<any>) {
+	const schemaKeys = Object.keys(model.schema.obj);
+	const keys = Object.keys(data);
+	if (keys.some(key => !schemaKeys.includes(key))) {
+		throw new Error(`Some of the data is invalid. Valid entries are: ${schemaKeys.join(', ')}.`);
+	}
 }

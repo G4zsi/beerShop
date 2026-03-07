@@ -4,6 +4,7 @@ import { seedBeers, seedProducts, seedTestProducts } from './productSeeder';
 import { seedPurchase } from './purchaseSeeder';
 import { seedReviews } from './reviewSeeder';
 import { seedUsers, seedTestUsers } from './userSeeder';
+import { seedCoupons } from './couponSeeder';
 import { getDBConnection } from '../../utils/dbHelper';
 
 async function seedAll() {
@@ -21,7 +22,8 @@ async function seedAll() {
 	await seedReviews(5);
 	// create purchases
 	await seedPurchase(5);
-
+	// create coupons
+	await seedCoupons(5);
 	console.log('DB seed done');
 }
 
