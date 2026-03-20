@@ -12,5 +12,6 @@ async function seedUsers(quantity: number) {
 }
 
 async function seedTestUsers() {
+	console.log('Seeding test users...');
 	await createTestUsers();
 }

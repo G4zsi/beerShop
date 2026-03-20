@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import { userRouter } from '../routers/userRoutes';
 import { productRouter } from '../routers/productRoutes';
 import { reviewRouter } from '../routers/reviewRoutes';
+import { couponRouter } from '../routers/couponRoutes';
+import { purchaseRouter } from '../routers/purchaseRoutes';
 
 export {
 	app
@@ -15,4 +17,5 @@ app.use(bodyParser.json());
 app.use('/users', userRouter);
 app.use('/products', productRouter);
 app.use('/reviews', reviewRouter);
-
+app.use('/purchases', purchaseRouter);
+app.use('/coupons', couponRouter);

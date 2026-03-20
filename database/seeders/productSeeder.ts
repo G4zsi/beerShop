@@ -19,5 +19,6 @@ async function seedBeers(quantity: number) {
 }
 
 async function seedTestProducts() {
+	console.log('Seeding test products...');
 	await createTestProducts(20, 12, 5);
 }

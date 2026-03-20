@@ -118,7 +118,7 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 	if (user.birthday) {
 		if(user.birthday.length === 0) {
 			return 'This field is required. Please enter your birth date.';
-		} else if(!validator.isDate(user.birthday, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
+		} else if(!validator.isDate(user.birthday, {format: 'YYYY.MM.DD.', delimiters: ['.', '/']})) {
 			return 'The birthday must be a valid date.';
 		}
 	}
@@ -318,6 +318,7 @@ async function validateCoupon(coupon: Request['body'], options: {update: boolean
 	try {
 		await checkExtraFields(coupon, Coupon);
 	} catch (err) {
+		//TODO fix this
 		return err;
 	}
 
@@ -328,10 +329,10 @@ async function validateCoupon(coupon: Request['body'], options: {update: boolean
 		if(!coupon.discount) {
 			return 'A coupon must have a discount.';
 		}
-		if(!coupon.combinable) {
+		if(coupon.combinable === undefined) {
 			return 'Please specify if the coupon can be combined with other coupons.';
 		}
-		if(!coupon.active) {
+		if(coupon.active === undefined) {
 			return 'Please specify if the coupon is active.';
 		}
 	}
@@ -369,12 +370,12 @@ async function validateCoupon(coupon: Request['body'], options: {update: boolean
 		return 'Please specify if the coupon is active.';
 	}
 	
-	if (coupon.startDate && !validator.isDate(coupon.startDate, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
+	if (coupon.startDate && !validator.isDate(coupon.startDate, {format: 'YYYY.MM.DD.', delimiters: ['.', '/']})) {
 		return 'The start date must be a valid date.';
 	}
 
 	if (coupon.expirationDate) {
-		if(!validator.isDate(coupon.expirationDate, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
+		if(!validator.isDate(coupon.expirationDate, {format: 'YYYY.MM.DD.', delimiters: ['.', '/']})) {
 			return 'The expiration date must be a valid date.';
 		} else if (coupon.startDate && new Date(coupon.expirationDate) < new Date(coupon.startDate)) {
 			return 'The expiration date can\'t be before the start date.';

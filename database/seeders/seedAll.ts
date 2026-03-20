@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import { createAdminUser, createManagerUser } from '../factories/userFactory';
 import { seedBeers, seedProducts, seedTestProducts } from './productSeeder';
-import { seedPurchase } from './purchaseSeeder';
-import { seedReviews } from './reviewSeeder';
+import { seedPurchase, seedTestPurchases } from './purchaseSeeder';
+import { seedReviews, seedTestReviews } from './reviewSeeder';
 import { seedUsers, seedTestUsers } from './userSeeder';
-import { seedCoupons } from './couponSeeder';
+import { seedCoupons, seedTestCoupons } from './couponSeeder';
 import { getDBConnection } from '../../utils/dbHelper';
 
 async function seedAll() {
@@ -30,6 +30,9 @@ async function seedAll() {
 async function seedTest() {
 	await seedTestUsers();
 	await seedTestProducts();
+	await seedTestCoupons();
+	await seedTestPurchases();
+	await seedTestReviews();
 	console.log('Test DB seed done');
 }
 

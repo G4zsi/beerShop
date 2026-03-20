@@ -1,6 +1,6 @@
 import {faker} from '@faker-js/faker';
 import { User } from '../models/userModel';
-import { genderTypes } from '../../utils/dbValues/userValues';
+import { GenderTypes, genderTypes } from '../../utils/dbValues/userValues';
 
 export {
 	createSimpleUser,
@@ -9,17 +9,17 @@ export {
 	createTestUsers
 };
 
-async function createSimpleUser() {
+async function createSimpleUser(firstName?: string, lastName?: string, gender?: GenderTypes, email?: string, phoneNumber?: string, birthday?: Date) {
 	const user = await new User({
-		firstName: faker.person.firstName(),
-		lastName: faker.person.lastName(),
-		gender: faker.helpers.arrayElement(genderTypes),
-		email: faker.internet.email(),
+		firstName: firstName ? firstName : faker.person.firstName(),
+		lastName: lastName ? lastName : faker.person.lastName(),
+		gender: gender ? gender : faker.helpers.arrayElement(genderTypes),
+		email: email ? email : faker.internet.email(),
 		role: 'customer',
-		phoneNumber: faker.phone.number(),
+		phoneNumber: phoneNumber ? phoneNumber : faker.phone.number(),
 		password: 'Pwd-123456',
 		passwordAgain: 'Pwd-123456',
-		birthday: faker.date.birthdate(),
+		birthday: birthday ? birthday : faker.date.birthdate(),
 		newsLetter: faker.datatype.boolean(),
 		zipCode: faker.number.int({min: 1000, max: 9999}),
 		city: faker.location.city(),
@@ -32,33 +32,33 @@ async function createSimpleUser() {
 	await User.create(user);
 }
 
-async function createManagerUser() {
+async function createManagerUser(gender?: GenderTypes, phoneNumber?: string, birthday?: Date) {
 	const user = await new User({
-		firstName: faker.person.firstName(),
-		lastName: faker.person.lastName(),
-		gender: faker.helpers.arrayElement(genderTypes),
+		firstName: 'manager',
+		lastName: 'manager',
+		gender: gender ? gender : faker.helpers.arrayElement(genderTypes),
 		email: faker.internet.email(),
 		role: 'manager',
-		phoneNumber: faker.phone.number(),
+		phoneNumber: phoneNumber ? phoneNumber : faker.phone.number(),
 		password: 'Pwd-123456',
 		passwordAgain: 'Pwd-123456',
-		birthday: faker.date.birthdate(),
+		birthday: birthday ? birthday : faker.date.birthdate(),
 	});
 
 	await User.create(user);
 }
 
-async function createAdminUser(gender?: string, phoneNumber?: string, birthday?: Date) {
+async function createAdminUser(gender?: GenderTypes, phoneNumber?: string, birthday?: Date) {
 	const user = await new User({
 		firstName: 'admin',
 		lastName: 'admin',
-		gender: faker.helpers.arrayElement(genderTypes),
+		gender: gender ? gender : faker.helpers.arrayElement(genderTypes),
 		email: 'admin@admin.hu',
 		role: 'admin',
-		phoneNumber: !phoneNumber ? faker.phone.number() : phoneNumber,
+		phoneNumber: phoneNumber ? phoneNumber : faker.phone.number(),
 		password: 'Pwd-123456',
 		passwordAgain: 'Pwd-123456',
-		birthday: !birthday ? faker.date.birthdate() : birthday
+		birthday: birthday ? birthday : faker.date.birthdate()
 	});
 
 	await User.create(user);
@@ -66,20 +66,9 @@ async function createAdminUser(gender?: string, phoneNumber?: string, birthday?:
 
 async function createTestUsers() {
 	await createAdminUser('Male', '+3620121212', new Date(1980, 3, 3));
+	await createManagerUser('Female', '+3620111111', new Date(1990, 5, 5));
 
 	for(let i = 0; i < 20; i++) {
-		const user = await new User({
-			firstName: 'User',
-			lastName: `User${i}`,
-			gender: faker.helpers.arrayElement(genderTypes),
-			email: `user${i}@admin.hu`,
-			role: i === 0 ? 'manager' : 'customer',
-			phoneNumber: `+362011111${i}`,
-			password: 'Pwd-123456',
-			passwordAgain: 'Pwd-123456',
-			birthday: new Date(`1999, 1, ${i+1}`)
-		});
-
-		await User.create(user);
+		await createSimpleUser(`User${i}`, `User${i}`, faker.helpers.arrayElement(genderTypes), `user${i}@user.hu`, `+362011111${i}`, new Date(1999, 1, i+1));
 	}
 }
