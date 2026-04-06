@@ -1,5 +1,5 @@
 import { Schema, model, models } from 'mongoose';
-import { productCategories } from '../../utils/dbValues/productValues';
+import { productCategories } from '../../types/ProductTypes';
 
 const couponSchema = new Schema({
 	code: {

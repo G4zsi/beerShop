@@ -83,13 +83,13 @@ async function createPurchase(req: Request, res: Response) {
 		return;
 	}
 
-	const newPurchase = await new Purchase(req.body);
-	await Purchase.create(newPurchase);
+	const query = await new Purchase(req.body);
+	await Purchase.create(query);
 
 	res.status(201).json({
 		status: 'success',
 		data: {
-			newPurchase
+			query
 		}
 	});
 }

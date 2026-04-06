@@ -83,13 +83,13 @@ async function createProduct(req: Request, res: Response) {
 		});
 		return;
 	}
-	const newProduct = await new Product(req.body);
-	await Product.create(newProduct);
+	const query = await new Product(req.body);
+	await Product.create(query);
 
 	res.status(201).json({
 		status: 'success',
 		data: {
-			newProduct
+			query
 		}
 	});
 }

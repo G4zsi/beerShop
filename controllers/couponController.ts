@@ -86,13 +86,13 @@ async function createCoupon(req: Request, res: Response) {
 		return;
 	}
 
-	const newCoupon = await new Coupon(req.body);
-	await Coupon.create(newCoupon);
+	const query = await new Coupon(req.body);
+	await Coupon.create(query);
 
 	res.status(201).json({
 		status: 'success',
 		data: {
-			newCoupon
+			query
 		}
 	});
 }

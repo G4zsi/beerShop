@@ -1,5 +1,5 @@
 import { Schema,model, models } from 'mongoose';
-import { genderTypes, roleTypes } from '../../utils/dbValues/userValues';
+import { genderTypes, roleTypes } from '../../types/UserTypes';
 import { passwordRegex } from '../../utils/passwordRegex';
 
 const userSchema = new Schema({

@@ -3,7 +3,7 @@ import { randomQuery } from '../utils/seedHelpers';
 import { User } from '../models/userModel';
 import { Product } from '../models/productModel';
 import { Review } from '../models/reviewModel';
-import { StarValues, starValues } from '../../utils/dbValues/reviewValues';
+import { StarValues, starValues } from '../../types/ReviewTypes';
 
 export {
 	createReview,

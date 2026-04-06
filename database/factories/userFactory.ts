@@ -1,6 +1,6 @@
 import {faker} from '@faker-js/faker';
 import { User } from '../models/userModel';
-import { GenderTypes, genderTypes } from '../../utils/dbValues/userValues';
+import { GenderTypes, genderTypes } from '../../types/UserTypes';
 
 export {
 	createSimpleUser,

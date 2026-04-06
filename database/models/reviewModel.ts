@@ -1,5 +1,5 @@
 import { Schema, model, models } from 'mongoose';
-import { starValues } from '../../utils/dbValues/reviewValues';
+import { starValues } from '../../types/ReviewTypes';
 import { commentRegex } from '../../utils/commentRegex';
 
 

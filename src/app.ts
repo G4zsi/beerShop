@@ -14,6 +14,10 @@ const app: Express = express();
 
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+	res.status(200).json({ status: 'OK' });
+});
+
 app.use('/users', userRouter);
 app.use('/products', productRouter);
 app.use('/reviews', reviewRouter);

@@ -5,9 +5,9 @@ import { User } from '../database/models/userModel';
 import { Product } from '../database/models/productModel';
 import { Review } from '../database/models/reviewModel';
 import { passwordRegex } from '../utils/passwordRegex';
-import { genderTypes, roleTypes } from '../utils/dbValues/userValues';
-import { productCategories, fermentationTypes } from '../utils/dbValues/productValues';
-import { starValues } from '../utils/dbValues/reviewValues';
+import { genderTypes, roleTypes } from '../types/UserTypes';
+import { productCategories, fermentationTypes } from '../types/ProductTypes';
+import { starValues } from '../types/ReviewTypes';
 import { Purchase } from '../database/models/purchaseModel';
 import { Coupon } from '../database/models/couponModel';
 
@@ -43,7 +43,7 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 		}
 
 		if(!user.gender) {
-			return 'This field is required. Please choose your gender';
+			return 'This field is required. Please choose your gender.';
 		}	
 		
 		if(!user.email) {
@@ -51,7 +51,7 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 		}
 
 		if(!user.role) {
-			return 'A user must have a role!';
+			return 'This field is required. A user must have a role!';
 		}
 
 		if(!user.password) {
@@ -77,7 +77,7 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 
 	if (user.gender) {
 		if(user.gender.length === 0) {
-			return 'This field is required. Please choose your gender';
+			return 'This field is required. Please choose your gender.';
 		} else if(!genderTypes.includes(user.gender)) {
 			const formatted = `${genderTypes.slice(0, -1).join(', ')} or ${genderTypes[genderTypes.length - 1]}`;
 			return `The gender must be ${formatted}.`;
@@ -96,7 +96,7 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 
 	if(user.role) {
 		if(user.role.length === 0) {
-			return 'A user must have a role!';
+			return 'This field is required. A user must have a role!';
 		} else if(!roleTypes.includes(user.role)) {
 			const formatted = `${roleTypes.slice(0, -1).join(', ')} or ${roleTypes[roleTypes.length - 1]}`;
 			return `The role must be ${formatted}.`;
@@ -118,8 +118,32 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 	if (user.birthday) {
 		if(user.birthday.length === 0) {
 			return 'This field is required. Please enter your birth date.';
-		} else if(!validator.isDate(user.birthday, {format: 'YYYY.MM.DD.', delimiters: ['.', '/']})) {
+		} else if(!validator.isDate(user.birthday /*{format: 'YYYY.MM.DD', delimiters: ['.', '/']}*/)) {
 			return 'The birthday must be a valid date.';
+		}
+	}
+
+	if(user.zipCode || user.city || user.address || user.billingZipCode || user.billingCity || user.billingAddress) {
+		if(!user.zipCode || user.zipCode.length === 0) {
+			return 'Please enter your zip code.';
+		}
+		if(!user.city || user.city.length === 0) {
+			return 'Please enter your city.';
+		}
+		if(!user.address || user.address.length === 0) {
+			return 'Please enter your address.';
+		}
+		if(!user.phoneNumber || user.phoneNumber.length === 0) {
+			return 'Please enter your phone number.';
+		}
+		if(!user.billingZipCode || user.billingZipCode.length === 0) {
+			return 'Please enter your billing zip code.';
+		}
+		if(!user.billingCity || user.billingCity.length === 0) {
+			return 'Please enter your billing city.';
+		}
+		if(!user.billingAddress || user.billingAddress.length === 0) {
+			return 'Please enter your billing address.';
 		}
 	}
 
@@ -155,7 +179,7 @@ async function validateProduct(product: Request['body'], options: {update: boole
 			return 'Please enter the correct price for the product';
 		}
 
-		if(!product.discount) {
+		if(product.discount == undefined) {
 			return 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.';
 		}
 
@@ -197,7 +221,7 @@ async function validateProduct(product: Request['body'], options: {update: boole
 		}
 	}
 
-	if (product.discount) {
+	if (product.discount != undefined) {
 		if(product.discount.toString().length === 0) {
 			return 'If the product is not discounted, please enter "0" Else enter the percentage of the discount.';
 		} else if (typeof product.discount != 'number') {
@@ -370,12 +394,12 @@ async function validateCoupon(coupon: Request['body'], options: {update: boolean
 		return 'Please specify if the coupon is active.';
 	}
 	
-	if (coupon.startDate && !validator.isDate(coupon.startDate, {format: 'YYYY.MM.DD.', delimiters: ['.', '/']})) {
+	if (coupon.startDate && !validator.isDate(coupon.startDate, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
 		return 'The start date must be a valid date.';
 	}
 
 	if (coupon.expirationDate) {
-		if(!validator.isDate(coupon.expirationDate, {format: 'YYYY.MM.DD.', delimiters: ['.', '/']})) {
+		if(!validator.isDate(coupon.expirationDate, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
 			return 'The expiration date must be a valid date.';
 		} else if (coupon.startDate && new Date(coupon.expirationDate) < new Date(coupon.startDate)) {
 			return 'The expiration date can\'t be before the start date.';

@@ -1,6 +1,6 @@
 import {faker} from '@faker-js/faker';
 import { Product } from '../models/productModel';
-import { fermentationTypes, productCategories } from '../../utils/dbValues/productValues';
+import { fermentationTypes, productCategories } from '../../types/ProductTypes';
 
 export {
 	createProduct,

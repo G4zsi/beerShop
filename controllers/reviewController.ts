@@ -83,7 +83,7 @@ async function createReview(req: Request, res: Response) {
 	const validatedReview = await validators.validateReview(req.body, {update: false});
 	let user;
 	let product;
-	let newReview;
+	let query;
 	if (validatedReview != 'validated') {
 		res.status(400).json({
 			status: 'failed',
@@ -129,9 +129,9 @@ async function createReview(req: Request, res: Response) {
 	}
 	
 	try {
-		newReview = await Review.create(req.body);
-		await User.findByIdAndUpdate(req.body.owner, {$push: {reviews: newReview._id}});
-		await Product.findByIdAndUpdate(req.body.product, {$push: {reviews: newReview._id}});
+		query = await Review.create(req.body);
+		await User.findByIdAndUpdate(req.body.owner, {$push: {reviews: query._id}});
+		await Product.findByIdAndUpdate(req.body.product, {$push: {reviews: query._id}});
 	} catch {
 		res.status(400).json({
 			status: 'error',
@@ -143,7 +143,7 @@ async function createReview(req: Request, res: Response) {
 	res.status(201).json({
 		status: 'success',
 		data: {
-			newReview
+			query
 		}
 	});
 }

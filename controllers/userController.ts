@@ -83,13 +83,13 @@ async function createUser(req: Request, res: Response) {
 		});
 		return;
 	}
-	const newUser = await new User(req.body);
-	await User.create(newUser);
+	const query = await new User(req.body);
+	await User.create(query);
 
 	res.status(201).json({
 		status: 'success',
 		data: {
-			newUser
+			query
 		}
 	});
 }

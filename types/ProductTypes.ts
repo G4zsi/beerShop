@@ -1,5 +1,9 @@
 export {
-	ProductType
+	ProductType,
+	FermentationTypes,
+	ProductCategories,
+	fermentationTypes,
+	productCategories
 };
 
 type ProductType = {
@@ -16,3 +20,9 @@ type ProductType = {
 	// TODO: review type
 	reviews?: string;
 };
+
+const fermentationTypes = ['ale', 'lager', 'hybrid'];
+const productCategories = ['beer', 'snack', 'glass', 'clothing', 'non-alcoholic', 'book', 'gift card', 'other'];
+
+type FermentationTypes = typeof fermentationTypes[number];
+type ProductCategories = typeof productCategories[number];

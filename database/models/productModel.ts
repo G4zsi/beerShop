@@ -1,5 +1,5 @@
 import { Schema, model, models } from 'mongoose';
-import { fermentationTypes, productCategories } from '../../utils/dbValues/productValues';
+import { fermentationTypes, productCategories } from '../../types/ProductTypes';
 
 const productSchema = new Schema({
 	//required
