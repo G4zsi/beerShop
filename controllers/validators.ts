@@ -10,6 +10,10 @@ import { productCategories, fermentationTypes } from '../types/ProductTypes';
 import { starValues } from '../types/ReviewTypes';
 import { Purchase } from '../database/models/purchaseModel';
 import { Coupon } from '../database/models/couponModel';
+import logger from '../utils/logger';
+
+//TODO create separate validator files for each model and move the validation functions there. Also, create a separate file for the checkExtraFields function and import it in the validator files. This will make the code more organized and easier to maintain.
+//TODO create billing and shipping address checking function
 
 export {
 	validateId,
@@ -27,9 +31,11 @@ async function validateId(id: string) {
 
 // user
 async function validateUser (user: Request['body'], options: {update: boolean}) {
+	logger.info('Validating user data...');
 	try {
 		await checkExtraFields(user, User);
 	} catch (err) {
+		logger.error(err);
 		return err;
 	}
 
@@ -118,7 +124,7 @@ async function validateUser (user: Request['body'], options: {update: boolean}) 
 	if (user.birthday) {
 		if(user.birthday.length === 0) {
 			return 'This field is required. Please enter your birth date.';
-		} else if(!validator.isDate(user.birthday /*{format: 'YYYY.MM.DD', delimiters: ['.', '/']}*/)) {
+		} else if(!validator.isDate(user.birthday, {format: 'YYYY.MM.DD', delimiters: ['.', '/']})) {
 			return 'The birthday must be a valid date.';
 		}
 	}
