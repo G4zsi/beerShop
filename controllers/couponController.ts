@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import { Coupon } from '../database/models/couponModel';
-import * as validators from './validators';
+import { validateCoupon } from './validators/validateCoupon';
+import { validateID } from './validators/validateID';
 
 export {
 	getAllCoupons,
@@ -23,7 +24,7 @@ async function getAllCoupons(_req: Request, res: Response) {
 }
 
 async function getCoupon(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Coupon not found, invalid ID.'
@@ -52,7 +53,7 @@ async function getCoupon(req: Request, res: Response) {
 }
 
 async function deleteCoupon(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Coupon not found, invalid ID.'
@@ -77,7 +78,7 @@ async function deleteCoupon(req: Request, res: Response) {
 }
 
 async function createCoupon(req: Request, res: Response) {
-	const validatedCoupon = await validators.validateCoupon(req.body, { update: false });
+	const validatedCoupon = await validateCoupon(req.body, { update: false });
 	if(validatedCoupon != 'validated') {
 		res.status(406).json({
 			status: 'failed',
@@ -100,7 +101,7 @@ async function createCoupon(req: Request, res: Response) {
 async function updateCoupon(req: Request, res: Response) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedCoupon: any;
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Coupon not found, invalid ID.'
@@ -126,7 +127,7 @@ async function updateCoupon(req: Request, res: Response) {
 		return;
 	}
 
-	const validatedCoupon = await validators.validateCoupon(req.body, { update: true });
+	const validatedCoupon = await validateCoupon(req.body, { update: true });
 	if (validatedCoupon != 'validated') {
 		res.status(406).json({
 			status: 'failed',

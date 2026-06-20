@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Product } from '../database/models/productModel';
-import * as validators from './validators';
+import { validateProduct } from './validators/validateProduct';
+import { validateID } from './validators/validateID';
 
 export {
 	getAllProducts,
@@ -25,7 +26,7 @@ async function getAllProducts(_req: Request, res: Response) {
 }
 
 async function getProduct(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Product not found, invalid ID.'
@@ -52,7 +53,7 @@ async function getProduct(req: Request, res: Response) {
 }
 
 async function deleteProduct(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Product not found, invalid ID.'
@@ -75,7 +76,7 @@ async function deleteProduct(req: Request, res: Response) {
 }
 
 async function createProduct(req: Request, res: Response) {
-	const validatedProduct = await validators.validateProduct(req.body, {update: false});
+	const validatedProduct = await validateProduct(req.body, {update: false});
 	if(validatedProduct != 'validated') {
 		res.status(406).json({
 			status: 'failed',
@@ -98,7 +99,7 @@ async function updateProduct(req: Request, res: Response) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedProduct: any;
 
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Document not found, invalid ID.'
@@ -124,7 +125,7 @@ async function updateProduct(req: Request, res: Response) {
 		return;
 	}
 
-	const validatedProduct = await validators.validateProduct(req.body, {update: true});
+	const validatedProduct = await validateProduct(req.body, {update: true});
 
 	if(validatedProduct != 'validated') {
 		res.status(406).json({

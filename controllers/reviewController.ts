@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Review } from '../database/models/reviewModel';
-import * as validators from './validators';
+import { validateReview } from './validators/validateReview';
+import { validateID } from './validators/validateID';
 import { User } from '../database/models/userModel';
 import { Product } from '../database/models/productModel';
 
@@ -28,7 +29,7 @@ async function getAllReviews(_req: Request, res: Response) {
 }
 
 async function getReview(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Review not found, invalid ID.'
@@ -55,7 +56,7 @@ async function getReview(req: Request, res: Response) {
 }
 
 async function deleteReview(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Review not found, invalid ID.'
@@ -80,7 +81,7 @@ async function deleteReview(req: Request, res: Response) {
 }
 
 async function createReview(req: Request, res: Response) {
-	const validatedReview = await validators.validateReview(req.body, {update: false});
+	const validatedReview = await validateReview(req.body, {update: false});
 	let user;
 	let product;
 	let query;
@@ -151,7 +152,7 @@ async function createReview(req: Request, res: Response) {
 async function updateReview(req: Request, res: Response) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedReview: any;
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Review not found, invalid ID.'
@@ -178,7 +179,7 @@ async function updateReview(req: Request, res: Response) {
 	}	
 
 
-	const validatedReview = await validators.validateReview(req.body, {update: true});
+	const validatedReview = await validateReview(req.body, {update: true});
 	if (validatedReview != 'validated') {
 		res.status(406).json({
 			status: 'failed',

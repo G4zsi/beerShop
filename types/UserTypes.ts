@@ -18,10 +18,10 @@ type UserType = {
 	passwordAgain: string;
 	birthday: Date | string;
 	phoneNumber?: string;
-	zipCode?: string;
+	zipCode?: number;
 	city?: string;
 	address?: string;
-	billingZipCode?: string;
+	billingZipCode?: number;
 	billingCity?: string;
 	billingAddress?: string;
 	newsLetter?: boolean;

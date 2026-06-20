@@ -21,14 +21,22 @@ async function checkUserData(response: APIResponse, userData: UserType) {
 		expect(body).toHaveProperty('phoneNumber', userData.phoneNumber);
 	}
 
-	if(userData.zipCode || userData.city || userData.address || userData.billingZipCode || userData.billingCity || userData.billingAddress) {
+	if(userData.zipCode || userData.city || userData.address) {
 		expect(body).toHaveProperty('zipCode', userData.zipCode);
 		expect(body).toHaveProperty('city', userData.city);
 		expect(body).toHaveProperty('address', userData.address);
+	}
+
+	if(userData.billingZipCode) {
 		expect(body).toHaveProperty('billingZipCode', userData.billingZipCode);
 		expect(body).toHaveProperty('billingCity', userData.billingCity);
 		expect(body).toHaveProperty('billingAddress', userData.billingAddress);
-		expect(body).toHaveProperty('phoneNumber', userData.phoneNumber);
+	}
+
+	if(userData.zipCode && !userData.billingZipCode) {
+		expect(body).toHaveProperty('billingZipCode', userData.zipCode);
+		expect(body).toHaveProperty('billingCity', userData.city);
+		expect(body).toHaveProperty('billingAddress', userData.address);
 	}
 
 	if(userData.newsLetter !== undefined) {

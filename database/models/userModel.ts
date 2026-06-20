@@ -45,7 +45,7 @@ const userSchema = new Schema({
 		select: false,
 		minlength: [8, 'A password must contain at least 8 characters'],
 		maxlength: [20, 'A password can contain maximum 20 characters'],
-		match: [passwordRegex, 'A password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character.']
+		match: [passwordRegex, 'A password must contain at least 8 characters and maximum 20 characters, at least one uppercase letter, one lowercase letter, one number and one special character.']
 	},
 	
 	passwordAgain: {
@@ -54,7 +54,7 @@ const userSchema = new Schema({
 		select: false,
 		minlength: [8, 'A password must contain at least 8 characters'],
 		maxlength: [20, 'A password can contain maximum 20 characters'],
-		match: [passwordRegex, 'A password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character.']
+		match: [passwordRegex, 'A password must contain at least 8 characters and maximum 20 characters, at least one uppercase letter, one lowercase letter, one number and one special character.']
 	},
 	
 	birthday: {
@@ -69,7 +69,9 @@ const userSchema = new Schema({
 	},
 
 	zipCode: {
-		type: Number
+		type: Number,
+		min: [1000, 'The zip code must be a 4-digit number.'],
+		max: [9999, 'The zip code must be a 4-digit number.']
 	},
 
 	city: {
@@ -81,7 +83,9 @@ const userSchema = new Schema({
 	},
 
 	billingZipCode: {
-		type: Number
+		type: Number,
+		min: [1000, 'The billing zip code must be a 4-digit number.'],
+		max: [9999, 'The billing zip code must be a 4-digit number.']
 	},
 
 	billingCity: {

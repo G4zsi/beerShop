@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Purchase } from '../database/models/purchaseModel';
-import * as validators from './validators';
+import { validatePurchase } from './validators/validatePurchase';
+import { validateID } from './validators/validateID';
 
 export {
 	getAllPurchases,
@@ -25,7 +26,7 @@ async function getAllPurchases(_req: Request, res: Response) {
 }
 
 async function getPurchase(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Purchase not found, invalid ID.'
@@ -50,7 +51,7 @@ async function getPurchase(req: Request, res: Response) {
 }
 
 async function deletePurchase(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Purchase not found, invalid ID.'
@@ -73,7 +74,7 @@ async function deletePurchase(req: Request, res: Response) {
 }
 
 async function createPurchase(req: Request, res: Response) {
-	const validatedPurchase = await validators.validatePurchase(req.body, { update: false });
+	const validatedPurchase = await validatePurchase(req.body, { update: false });
 
 	if (validatedPurchase != 'validated') {
 		res.status(400).json({
@@ -96,7 +97,7 @@ async function createPurchase(req: Request, res: Response) {
 
 async function updatePurchase(req: Request, res: Response) {
 	let editedPurchase;
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Purchase not found, invalid ID.'
@@ -121,7 +122,7 @@ async function updatePurchase(req: Request, res: Response) {
 		return;
 	}
 
-	const validatedPurchase = await validators.validatePurchase(req.body, { update: true });
+	const validatedPurchase = await validatePurchase(req.body, { update: true });
 	if (validatedPurchase != 'validated') {
 		res.status(406).json({
 			status: 'failed',

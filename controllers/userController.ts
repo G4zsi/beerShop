@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { User } from '../database/models/userModel';
-import * as validators from './validators';
+import { validateUser } from './validators/validateUser';
+import { validateID } from './validators/validateID';
+import { addUserAddressData } from './src/addUserAddressData';
 
 export {
 	getAllUsers,
@@ -25,7 +27,7 @@ async function getAllUsers(_req: Request, res: Response) {
 }
 
 async function getUser(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'User not found, invalid ID.'
@@ -52,7 +54,7 @@ async function getUser(req: Request, res: Response) {
 }
 
 async function deleteUser(req: Request, res: Response) {
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Document not found, invalid ID.'
@@ -75,7 +77,7 @@ async function deleteUser(req: Request, res: Response) {
 }
 
 async function createUser(req: Request, res: Response) {
-	const validatedUser = await validators.validateUser(req.body, {update: false});
+	const validatedUser = await validateUser(req.body, {update: false});
 	if(validatedUser != 'validated') {
 		res.status(406).json({
 			status: 'failed',
@@ -83,6 +85,7 @@ async function createUser(req: Request, res: Response) {
 		});
 		return;
 	}
+	req.body = addUserAddressData(req.body);
 	const query = await new User(req.body);
 	await User.create(query);
 
@@ -97,7 +100,7 @@ async function createUser(req: Request, res: Response) {
 async function updateUser(req: Request, res: Response) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let editedUser: any;
-	if(!await validators.validateId(String(req.params.id))) {
+	if(!await validateID(String(req.params.id))) {
 		res.status(404).json({
 			status: 'failed',
 			message: 'Document not found, invalid ID.'
@@ -123,7 +126,7 @@ async function updateUser(req: Request, res: Response) {
 		return;
 	}
 
-	const validatedUser = await validators.validateUser(req.body, {update: true});
+	const validatedUser = await validateUser(req.body, {update: true});
 
 	if(validatedUser != 'validated') {
 		res.status(406).json({
